@@ -1,19 +1,7 @@
-# Salesforce DX Project: Next Steps
+# Stop using RefId, Start using thread token
+Starting Spring '23, Salesforce introduced Lightning threading for Email-to-Case, replacing Ref ID with a secure token for email matching. This update, enforced in Spring '25, aims to improve reliability and security in email threading by using token- and header-based matching. To handle the transition from Ref ID to Lightning threading in Salesforce, update email templates to include the Case Thread Token merge field, adjust custom code to support token- and header-based threading, and test changes in a sandbox. Enable the "Disable Ref ID and Transition to New Email Threading Behavior" release update in Setup. 
 
-Now that you’ve created a Salesforce DX project, what’s next? Here are some documentation resources to get you started.
 
-## How Do You Plan to Deploy Your Changes?
-
-Do you want to deploy a set of changes, or create a self-contained application? Choose a [development model](https://developer.salesforce.com/tools/vscode/en/user-guide/development-models).
-
-## Configure Your Salesforce DX Project
-
-The `sfdx-project.json` file contains useful configuration information for your project. See [Salesforce DX Project Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm) in the _Salesforce DX Developer Guide_ for details about this file.
-
-## Read All About It
-
-- [Salesforce Extensions Documentation](https://developer.salesforce.com/tools/vscode/)
-- [Salesforce CLI Setup Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm)
-- [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_intro.htm)
-- [Salesforce CLI Command Reference](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference.htm)
-# threadtoken
+# Where is the thread token?
+In the standard reply action, the system provides you with the thread token for the email. However, this is not the case when you manually send the email in the flow using the SendEmail action. So where is it? You should use the EmailMessages.getFormattedThreadingToken method in Apex to generate a secure token. This token is then included in the subject or body of outbound emails. When a reply is received, Salesforce matches this token to the correct case record, ensuring emails are correctly threaded without using Ref IDs. This method requires Lightning threading to be enabled and only supports Case record IDs. 
+https://developer.salesforce.com/docs/atlas.en-us.244.0.apexref.meta/apexref/apex_System_EmailMessages_getFormattedThreadingToken.htm?_ga=2.15341374.969295726.1707191828-950895856.1667797139
