@@ -26,4 +26,9 @@ public with sharing class ThreadTokenController {
         }          
         return responses;
     }
+
+    @AuraEnabled
+    public static string returnTokens(String recordId){
+        return EmailMessages.getFormattedThreadingToken(recordId);
+    }
 }
